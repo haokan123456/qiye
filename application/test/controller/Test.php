@@ -4,7 +4,7 @@ use app\test\model\Cate;
 use think\Controller;
 use think\Session;
 
-class Test extends controller
+class Test extends Controller
 {
 	public $cate;
     public $cts;
@@ -16,6 +16,7 @@ class Test extends controller
 		$this->cate=new Cate();
         $this->cts=db('cate')->select();
 	}
+
     public function index()
     {
         $cat=$this->sel_data();
@@ -25,18 +26,14 @@ class Test extends controller
     public function add()
     {
     	if(!request()->isPost()){
-            $ct=db('cate')->select();
+            $ct=db('cate')->order('id asc')->select();
             $res=$this->sort($ct);
-    		return view('add',compact(['res']));
+    		return view('test/add',compact(['res']));
     	}
     	else{
     		$res=input('post.');
-
-            $cate=explode(',',$res['cate']);
-            foreach($cate as $val){
-                $row[]=['cate'=>$val,'fcate'=>$res['fcate']];
-            }
-    		$rs=$this->cate->insertAll($row);
+            
+    		$rs=$this->cate->insert($res);
     		if($rs){
                 $this->success('添加成功！','index');
             }
@@ -48,8 +45,14 @@ class Test extends controller
 
     public function del()
     {
-        $id=input('get.')['id'];
-    	$res=db('cate')->delete($id);
+        $id=(int)input('id');
+        $cates=db('cate')->select();
+        $ids=$this->sort($cates,$id);
+        $idlst[]=$id;
+        foreach($ids as $val){
+            $idlst[]=$val['id'];
+        }
+    	$res=db('cate')->delete($idlst);
         if($res)
             $this->success('删除成功！','index');
         else
@@ -76,8 +79,10 @@ class Test extends controller
 
     public function sel_data()
     {
-        $data=db('cate')->select();
+        $data=db('cate')->order('id asc')->select();
+        // dump($data);
         $res=$this->sort($data);
+        // pp($res);
         return $res;
     }
 
@@ -88,7 +93,7 @@ class Test extends controller
             if($val['fcate']===$pid){
                 $val['level']=$level;
                 $arr[]=$val;
-                $this->sort($data,$val['id'],$level+1);
+                $this->sort($data,(int)($val['id']),$level+1);
             }
         }
         return $arr;

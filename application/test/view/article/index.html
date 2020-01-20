@@ -75,29 +75,23 @@
             <div class="container-fluid">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">栏目管理<a href="{:url('test/test/add')}" class="btn btn-outline-secondary" style='float:right;'>添加栏目</a></h5>
+                        <h5 class="card-title">文章管理<a href="{:url('test/article/add')}" class="btn btn-outline-secondary" style='float:right;'>添加文章</a></h5>
                     </div>
                     <table class="table">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
-                          <th scope="col">栏目名称</th>
-                          <th scope="col">栏目类型</th>
+                          <th scope="col">文章名称</th>
+                          <th scope="col">所属栏目</th>
                           <th scope="col">操作</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {volist name='cat' id='vl'}
+                        {volist name='arcs' id='vl'}
                         <tr>
                           <th scope="row">{$vl.id}</th>
-                          <td>{if condition="$vl.level neq 0"}|{/if}<?php echo str_repeat('—',$vl['level']*3)?>{$vl.cate}</td>
-                          <td>
-                              {if condition="$vl.type eq 1"}
-                                列表页
-                              {else/}
-                                单页面
-                              {/if}
-                          </td>
+                          <td>{$vl.title}</td>
+                          <td>{$vl.cate}</td>
                           <td><a class="btn btn-primary btn-sm" href="edit?id={$vl.id}">编辑</a><a class="btn btn-danger btn-sm" style='margin-left:3px;' href='javascript:ask({$vl.id})'>删除</a></td>
                         </tr>
                         {/volist}
@@ -108,9 +102,9 @@
 
             <script>
                 function ask(id){
-                    var y=confirm('确认要删除该栏目吗？');
+                    var y=confirm('确认要删除该文章吗？');
                     if(y){
-                        window.location.href="del?id="+id;
+                        window.location.href="del_art?id="+id;
                     }
                 }
             </script>
